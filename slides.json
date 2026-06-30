@@ -1,0 +1,23 @@
+[
+  {
+    "image": "images/slide-1.png",
+    "title_en": "Your One-Stop Electronic Market",
+    "title_np": "तपाईंको एकमात्र इलेक्ट्रोनिक्स बजार",
+    "subtitle_en": "Best brands, best prices, delivered across Butwal",
+    "subtitle_np": "उत्तम ब्रान्ड, उत्तम मूल्य, बुटवलभरि डेलिभरी"
+  },
+  {
+    "image": "images/slide-2.png",
+    "title_en": "Big Discount on Home Appliances",
+    "title_np": "घरायसी सामानमा ठूलो छुट",
+    "subtitle_en": "Up to 25% off this season",
+    "subtitle_np": "यो सिजन २५% सम्म छुट"
+  },
+  {
+    "image": "images/slide-3.png",
+    "title_en": "New Arrivals Every Month",
+    "title_np": "हरेक महिना नयाँ सामान",
+    "subtitle_en": "Latest TVs, fridges & kitchen gadgets",
+    "subtitle_np": "नवीनतम टिभी, फ्रिज र भान्सा सामान"
+  }
+]

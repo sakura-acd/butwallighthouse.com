@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Light House | Electronics Shop</title>
+<style>
+  :root{
+    --orange:#ff5c39;
+    --orange-dark:#e84a28;
+    --ink:#1c1c1c;
+    --muted:#7c7c7c;
+    --line:#ececec;
+    --bg:#ffffff;
+    --bg-soft:#faf9f7;
+    --green:#1fa05a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Segoe UI',system-ui,sans-serif;
+    line-height:1.5;
+  }
+  a{color:inherit;text-decoration:none;}
+  img{display:block;max-width:100%;}
+
+  /* ===== Top utility bar ===== */
+  .topbar{
+    background:var(--ink);color:#fff;font-size:.78rem;
+    padding:7px 6%;display:flex;justify-content:space-between;align-items:center;
+  }
+  .topbar a{color:#fff;opacity:.85;}
+
+  .lang-switch{
+    display:flex;align-items:center;gap:6px;
+    background:#2b2b2b;border-radius:30px;padding:3px;
+  }
+  .lang-switch button{
+    border:none;background:transparent;color:#bbb;
+    font-size:.74rem;padding:4px 12px;border-radius:30px;cursor:pointer;font-weight:600;
+  }
+  .lang-switch button.active{background:var(--orange);color:#fff;}
+
+  /* ===== Header ===== */
+  header{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:24px;padding:18px 6%;border-bottom:1px solid var(--line);
+    position:sticky;top:0;background:#fff;z-index:50;flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .logo-mark{
+    width:36px;height:36px;border-radius:8px;background:var(--orange);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;font-weight:800;
+  }
+  .brand h1{font-size:1.2rem;}
+  .brand h1 span{color:var(--orange);}
+
+  nav{display:flex;align-items:center;gap:22px;font-size:.9rem;}
+  nav a:hover{color:var(--orange);}
+  .icon-btn{
+    width:38px;height:38px;border-radius:50%;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;font-size:1rem;position:relative;cursor:pointer;background:#fff;
+  }
+  .icon-btn .count{
+    position:absolute;top:-5px;right:-5px;background:var(--orange);color:#fff;
+    font-size:.6rem;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  }
+
+  /* ===== List Panel ===== */
+  .list-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.4);
+    z-index:90;opacity:0;pointer-events:none;transition:opacity .25s ease;
+  }
+  .list-overlay.open{opacity:1;pointer-events:auto;}
+  .list-panel{
+    position:fixed;top:0;right:0;height:100%;width:380px;max-width:92vw;
+    background:#fff;z-index:91;
+    transform:translateX(100%);transition:transform .3s ease;
+    display:flex;flex-direction:column;
+    box-shadow:-8px 0 24px rgba(0,0,0,.12);
+  }
+  .list-panel.open{transform:translateX(0);}
+  .list-head{
+    padding:18px 20px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .list-head h3{font-size:1.1rem;font-weight:800;}
+  .list-head button{border:none;background:none;font-size:1.3rem;cursor:pointer;color:var(--muted);}
+  .list-items{flex:1;overflow-y:auto;padding:10px 20px;}
+  .list-empty{color:var(--muted);font-size:.88rem;text-align:center;padding:40px 0;}
+  .list-row{
+    display:flex;gap:12px;align-items:center;
+    padding:14px 0;border-bottom:1px solid var(--line);
+  }
+  .list-row img{width:54px;height:54px;border-radius:8px;object-fit:cover;background:var(--bg-soft);flex-shrink:0;}
+  .list-row .fb{width:54px;height:54px;border-radius:8px;background:var(--bg-soft);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+  .list-row-info{flex:1;min-width:0;}
+  .list-row-info b{font-size:.86rem;display:block;}
+  .list-row-info span{font-size:.78rem;color:var(--muted);}
+  .qty-box{display:flex;align-items:center;gap:8px;}
+  .qty-box button{
+    width:24px;height:24px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:.85rem;
+  }
+  .qty-box b{font-size:.85rem;min-width:14px;text-align:center;}
+  .list-row-remove{border:none;background:none;color:var(--muted);cursor:pointer;font-size:.95rem;margin-left:6px;}
+  .list-foot{padding:18px 20px;border-top:1px solid var(--line);}
+  .list-total{display:flex;justify-content:space-between;font-weight:800;margin-bottom:14px;font-size:1rem;}
+  .list-foot .btn{width:100%;text-align:center;margin-bottom:10px;}
+  .btn-whatsapp{background:#25D366;color:#fff;}
+  .btn-whatsapp:hover{background:#1ebc59;}
+
+  .add-list-btn{
+    margin-top:6px;padding:9px 0;border:1px solid var(--orange);
+    background:#fff;color:var(--orange);border-radius:6px;
+    font-size:.82rem;font-weight:700;cursor:pointer;
+  }
+  .add-list-btn:hover{background:var(--orange);color:#fff;}
+  .add-list-btn.added{background:var(--green);border-color:var(--green);color:#fff;}
+
+  /* ===== Hero Slider ===== */
+  .slider{
+    position:relative;width:100%;height:380px;overflow:hidden;background:var(--bg-soft);
+  }
+  .slide{
+    position:absolute;inset:0;
+    display:flex;align-items:center;
+    opacity:0;transform:scale(1.04);
+    transition:opacity .9s ease, transform 1.2s ease;
+    pointer-events:none;
+  }
+  .slide.active{opacity:1;transform:scale(1);pointer-events:auto;}
+  .slide img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  }
+  .slide .scrim{
+    position:absolute;inset:0;
+    background:linear-gradient(90deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.15) 55%, transparent 80%);
+  }
+  .slide-content{
+    position:relative;z-index:2;color:#fff;padding:0 6%;max-width:560px;
+  }
+  .slide-content .eyebrow{
+    color:var(--orange);font-weight:700;font-size:.82rem;text-transform:uppercase;
+    letter-spacing:1px;margin-bottom:10px;display:block;
+  }
+  .slide-content h2{font-size:clamp(1.8rem,3.6vw,2.6rem);font-weight:800;margin-bottom:12px;line-height:1.2;}
+  .slide-content p{font-size:1rem;opacity:.92;margin-bottom:22px;max-width:420px;}
+
+  .slider-dots{
+    position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
+    display:flex;gap:8px;z-index:3;
+  }
+  .slider-dots button{
+    width:9px;height:9px;border-radius:50%;border:none;background:rgba(255,255,255,.5);cursor:pointer;
+  }
+  .slider-dots button.active{background:var(--orange);width:22px;border-radius:6px;transition:width .3s ease;}
+
+  .slider-arrow{
+    position:absolute;top:50%;transform:translateY(-50%);
+    width:40px;height:40px;border-radius:50%;border:none;
+    background:rgba(255,255,255,.85);font-size:1.1rem;cursor:pointer;z-index:3;
+  }
+  .slider-arrow.prev{left:18px;} .slider-arrow.next{right:18px;}
+
+  .btn{
+    padding:13px 28px;border-radius:6px;font-size:.92rem;font-weight:700;
+    cursor:pointer;border:none;display:inline-block;
+  }
+  .btn-orange{background:var(--orange);color:#fff;}
+  .btn-orange:hover{background:var(--orange-dark);}
+
+  /* ===== Promo strip ===== */
+  .why-us{padding:60px 6%;background:var(--bg-soft);border-bottom:1px solid var(--line);}
+  .why-us-head{text-align:center;max-width:560px;margin:0 auto 36px;}
+  .why-us-head .eyebrow{
+    color:var(--orange);font-weight:700;font-size:.82rem;text-transform:uppercase;
+    letter-spacing:1px;margin-bottom:8px;display:block;
+  }
+  .why-us-head h3{font-size:1.6rem;font-weight:800;margin-bottom:10px;}
+  .why-us-head p{color:var(--muted);font-size:.92rem;}
+  .why-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+  }
+  .why-card{
+    background:#fff;border:1px solid var(--line);border-radius:12px;
+    padding:24px 20px;display:flex;gap:14px;align-items:flex-start;
+    transition:box-shadow .15s ease, transform .15s ease;
+  }
+  .why-card:hover{box-shadow:0 10px 24px rgba(0,0,0,.07);transform:translateY(-3px);}
+  .why-card .ic{
+    width:42px;height:42px;border-radius:10px;flex-shrink:0;
+    background:#fff5f2;display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+  }
+  .why-card b{display:block;font-size:.95rem;margin-bottom:4px;}
+  .why-card span{color:var(--muted);font-size:.82rem;}
+
+  /* ===== Sections ===== */
+  .section{padding:60px 6% 10px;}
+  .section-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;}
+  .section-head h3{font-size:1.6rem;font-weight:800;}
+  .section-head .tag{color:var(--muted);font-size:.85rem;}
+
+  .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+  .chip{
+    padding:8px 18px;border:1px solid var(--line);border-radius:30px;
+    font-size:.82rem;color:var(--muted);cursor:pointer;background:#fff;
+  }
+  .chip.active,.chip:hover{border-color:var(--orange);color:var(--orange);background:#fff5f2;}
+
+  .category-block{margin-top:40px;}
+  .category-block h4{
+    font-size:1.15rem;font-weight:800;margin-bottom:18px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .category-block h4::after{content:"";flex:1;height:1px;background:var(--line);}
+
+  .grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+    gap:22px;padding-bottom:10px;
+  }
+  .card{
+    border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;
+    display:flex;flex-direction:column;
+    transition:box-shadow .15s ease, transform .15s ease;position:relative;
+  }
+  .card:hover{box-shadow:0 10px 24px rgba(0,0,0,.08);transform:translateY(-3px);}
+  .card-media{
+    height:150px;background:var(--bg-soft);overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .card-media img{width:100%;height:100%;object-fit:cover;}
+  .card-media .fallback{font-size:2.4rem;color:var(--muted);}
+  .badge{
+    position:absolute;top:12px;left:12px;background:var(--orange);color:#fff;
+    font-size:.7rem;font-weight:700;padding:4px 10px;border-radius:30px;z-index:2;
+  }
+  .badge.out{background:#bdbdbd;}
+  .card-body{padding:16px 16px 18px;display:flex;flex-direction:column;gap:6px;flex:1;}
+  .card-cat{font-size:.68rem;color:var(--orange);text-transform:uppercase;letter-spacing:1px;font-weight:700;}
+  .card-name{font-size:.98rem;font-weight:700;}
+  .card-desc{font-size:.8rem;color:var(--muted);flex:1;}
+  .price-row{display:flex;align-items:baseline;gap:8px;margin-top:4px;}
+  .price-now{font-size:1.15rem;color:var(--orange-dark);font-weight:800;}
+  .price-old{font-size:.8rem;color:var(--muted);text-decoration:line-through;}
+  .save-line{font-size:.74rem;color:var(--green);font-weight:600;}
+  .stock-line{font-size:.74rem;color:var(--muted);}
+
+  .state-msg{padding:0 0 60px;color:var(--muted);}
+
+  /* ===== Footer ===== */
+  footer{background:var(--ink);color:#cfcfcf;padding:50px 6% 24px;margin-top:50px;}
+  .foot-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:30px;margin-bottom:30px;}
+  .foot-grid h4{color:#fff;font-size:.95rem;margin-bottom:14px;}
+  .foot-grid p,.foot-grid a{font-size:.84rem;color:#b6b6b6;display:block;margin-bottom:8px;}
+
+  @media(max-width:640px){
+    .foot-grid{grid-template-columns:1fr;text-align:center;}
+    .foot-bottom{justify-content:center;text-align:center;flex-direction:column;}
+  }
+  .foot-bottom{
+    border-top:1px solid #333;padding-top:18px;font-size:.78rem;color:#8a8a8a;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  }
+
+  @media(max-width:768px){
+    nav{gap:14px;}
+    .slider{height:320px;}
+  }
+  @media(max-width:520px){
+    .slider-arrow{width:34px;height:34px;}
+  }
+
+  /* ===== Hamburger ===== */
+  .hamburger{
+    display:none;width:38px;height:38px;border-radius:8px;border:1px solid var(--line);
+    background:#fff;cursor:pointer;align-items:center;justify-content:center;
+    flex-direction:column;gap:4px;
+  }
+  .hamburger span{width:18px;height:2px;background:var(--ink);display:block;}
+
+  @media(max-width:520px){
+    nav a:not(.icon-btn){display:none;}
+    .hamburger{display:flex;}
+  }
+
+  /* ===== Mobile Nav Drawer ===== */
+  .nav-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:95;
+    opacity:0;pointer-events:none;transition:opacity .25s ease;
+  }
+  .nav-overlay.open{opacity:1;pointer-events:auto;}
+  .nav-drawer{
+    position:fixed;top:0;right:0;height:100%;width:300px;max-width:88vw;
+    background:#fff;z-index:96;transform:translateX(100%);transition:transform .3s ease;
+    display:flex;flex-direction:column;box-shadow:-8px 0 24px rgba(0,0,0,.12);
+  }
+  .nav-drawer.open{transform:translateX(0);}
+  .nav-drawer-head{
+    padding:18px 20px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .nav-drawer-head b{font-size:1.05rem;}
+  .nav-drawer-head button{border:none;background:none;font-size:1.3rem;cursor:pointer;color:var(--muted);}
+  .nav-drawer-body{flex:1;overflow-y:auto;padding:10px 0;}
+  .nav-drawer-body a{
+    display:block;padding:13px 20px;font-size:.95rem;color:var(--ink);border-bottom:1px solid var(--line);
+  }
+  .nav-drawer-body a.active-link{color:var(--orange);font-weight:700;}
+  .nd-section-title{
+    padding:16px 20px 6px;font-size:.74rem;color:var(--muted);
+    text-transform:uppercase;letter-spacing:1px;font-weight:700;
+  }
+  .nd-cat-link{padding:11px 20px 11px 30px !important;font-size:.88rem !important;}
+  /* ===== Animations ===== */
+  @keyframes floatY{
+    0%,100%{ transform:translateY(0) rotate(0deg); }
+    50%{ transform:translateY(-14px) rotate(2deg); }
+  }
+  @keyframes pulseGlow{
+    0%,100%{ box-shadow:0 0 0 0 rgba(255,92,57,.45); }
+    50%{ box-shadow:0 0 0 8px rgba(255,92,57,0); }
+  }
+  @keyframes shimmer{
+    0%{ background-position:-200% 0; }
+    100%{ background-position:200% 0; }
+  }
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(28px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  @keyframes popIn{
+    0%{ transform:scale(.4); opacity:0; }
+    70%{ transform:scale(1.08); opacity:1; }
+    100%{ transform:scale(1); }
+  }
+  @keyframes bounceIn{
+    0%{ transform:translateY(0); }
+    30%{ transform:translateY(-6px); }
+    60%{ transform:translateY(0); }
+  }
+  @keyframes spinSlow{
+    from{ transform:rotate(0deg); }
+    to{ transform:rotate(360deg); }
+  }
+  @keyframes underlineGrow{
+    from{ width:0; }
+    to{ width:100%; }
+  }
+
+  .logo-mark{ animation: popIn .6s ease; }
+  .hero-art{ animation: floatY 5s ease-in-out infinite; }
+
+  nav a{ position:relative; padding-bottom:3px; transition:color .2s ease; }
+  nav a::after{
+    content:"";position:absolute;left:0;bottom:0;height:2px;width:0;
+    background:var(--orange);transition:width .25s ease;
+  }
+  nav a:hover::after{ width:100%; }
+
+  .icon-btn{ transition:transform .2s ease, border-color .2s ease; }
+  .icon-btn:hover{ transform:translateY(-2px) scale(1.05); border-color:var(--orange); color:var(--orange); }
+  .icon-btn .count{ animation: bounceIn .5s ease; }
+
+  .btn{ position:relative; overflow:hidden; transition:transform .2s ease, box-shadow .2s ease; }
+  .btn:active{ transform:scale(.96); }
+  .btn-orange{
+    background:linear-gradient(100deg,var(--orange) 0%, var(--orange-dark) 50%, var(--orange) 100%);
+    background-size:200% 100%;
+  }
+  .btn-orange:hover{
+    animation: shimmer 1.4s linear infinite;
+    box-shadow:0 8px 22px rgba(255,92,57,.35);
+    transform:translateY(-2px);
+  }
+
+  .why-card, .card{ animation: fadeUp .6s ease both; }
+  .why-card:hover .ic{ animation: spinSlow .6s ease; }
+  .card:hover .card-media img{ transform:scale(1.08); }
+  .card-media img{ transition:transform .35s ease; }
+  .card:hover .card-name{ color:var(--orange-dark); }
+  .card-name{ transition:color .2s ease; }
+
+  .badge{ animation: pulseGlow 1.8s ease-in-out infinite; }
+
+  .chip{ transition:all .2s ease; }
+  .chip:hover{ transform:translateY(-2px); }
+  .chip.active{ animation: popIn .35s ease; }
+
+  .add-list-btn{ transition:all .2s ease; }
+  .add-list-btn:hover{ transform:translateY(-2px); box-shadow:0 6px 14px rgba(255,92,57,.25); }
+  .add-list-btn.added{ animation: popIn .35s ease; }
+
+  .reveal{ opacity:0; transform:translateY(30px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.show{ opacity:1; transform:translateY(0); }
+  .reveal:nth-child(2){ transition-delay:.08s; }
+  .reveal:nth-child(3){ transition-delay:.16s; }
+  .reveal:nth-child(4){ transition-delay:.24s; }
+  .reveal:nth-child(5){ transition-delay:.32s; }
+  .reveal:nth-child(6){ transition-delay:.4s; }
+
+  .section-head h3{ position:relative; display:inline-block; }
+  .why-us-head .eyebrow{ animation: fadeUp .5s ease both; }
+  .why-us-head h3{ animation: fadeUp .6s ease .05s both; }
+  .why-us-head p{ animation: fadeUp .6s ease .1s both; }
+
+  .slide-content .eyebrow{ animation: fadeUp .5s ease both; }
+  .slide-content h2{ animation: fadeUp .6s ease .08s both; }
+  .slide-content p{ animation: fadeUp .6s ease .16s both; }
+  .slide-content .btn{ animation: fadeUp .6s ease .24s both; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar" style="justify-content:flex-end;">
+  <div style="display:flex;align-items:center;gap:16px;">
+    <span class="nav-extra"><a href="contact.html" data-i18n="topbar_contact">सम्पर्क</a></span>
+    <div class="lang-switch">
+      <button id="btnNP" class="active">नेपाली</button>
+      <button id="btnEN">English</button>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="brand">
+    <div class="logo-mark">L</div>
+    <h1>light<span>house.</span></h1>
+  </div>
+
+  <nav>
+    <a href="#products" data-i18n="nav_products">सामानहरू</a>
+    <a href="#offers" data-i18n="nav_offers">अफर</a>
+    <a href="contact.html" data-i18n="topbar_contact">सम्पर्क</a>
+    <button class="icon-btn" id="openListBtn">📋<span class="count" id="listCount">0</span></button>
+    <button class="hamburger" id="hamburgerBtn"><span></span><span></span><span></span></button>
+  </nav>
+</header>
+
+<div class="nav-overlay" id="navOverlay"></div>
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-head">
+    <b>light house.</b>
+    <button id="closeNavBtn">✕</button>
+  </div>
+  <div class="nav-drawer-body" id="navDrawerBody">
+    <a href="index.html" data-i18n="nav_home">होमपेज</a>
+    <a href="#offers" class="nav-close-link" data-i18n="nav_offers">अफर</a>
+    <a href="contact.html" data-i18n="topbar_contact">सम्पर्क</a>
+    <div class="nd-section-title" data-i18n="products_heading">हाम्रा सामानहरू</div>
+    <a href="#products" class="nav-close-link" id="ndAllProducts" data-i18n="all_cat">सबै</a>
+    <div id="ndCategoryList"></div>
+  </div>
+</div>
+
+<div class="slider" id="slider"></div>
+
+<div class="list-overlay" id="listOverlay"></div>
+<div class="list-panel" id="listPanel">
+  <div class="list-head">
+    <h3 data-i18n="list_title">मेरो सूची</h3>
+    <button id="closeListBtn">✕</button>
+  </div>
+  <div class="list-items" id="listItems"></div>
+  <div class="list-foot">
+    <div class="list-total">
+      <span data-i18n="list_total">जम्मा</span>
+      <span id="listTotal">रु 0</span>
+    </div>
+    <button class="btn btn-whatsapp" id="sendWhatsapp" style="width:100%;">📲 <span data-i18n="list_send_wa">WhatsApp मा पठाउनुहोस्</span></button>
+    <button class="btn" id="sendEmail" style="width:100%;background:var(--bg-soft);color:var(--ink);border:1px solid var(--line);">✉️ <span data-i18n="list_send_email">इमेलमा पठाउनुहोस्</span></button>
+  </div>
+</div>
+
+<div class="why-us" id="offers">
+  <div class="why-us-head">
+    <span class="eyebrow" data-i18n="why_eyebrow">किन Light House?</span>
+    <h3 data-i18n="why_title">खुद्रा र थोक दुवै, अर्डर अनुसार सबै सामान</h3>
+    <p data-i18n="why_sub">हामीसँग नभएको सामान पनि अर्डर अनुसार ल्याइदिन्छौं — साथमा निःशुल्क डेलिभरी।</p>
+  </div>
+  <div class="why-grid">
+    <div class="why-card"><span class="ic">🏪</span><div><b data-i18n="why1_t">खुद्रा र थोक बिक्री</b><span data-i18n="why1_s">Retail & Wholesale — सानो वा ठूलो मात्रामा किन्नुहोस्</span></div></div>
+    <div class="why-card"><span class="ic">📦</span><div><b data-i18n="why2_t">अर्डर अनुसार सामान</b><span data-i18n="why2_s">स्टकमा नभएको सामान पनि अर्डर अनुसार उपलब्ध गराइन्छ</span></div></div>
+    <div class="why-card"><span class="ic">🚚</span><div><b data-i18n="promo1_t">Free Delivery</b><span data-i18n="promo1_s">Butwal भित्र निःशुल्क डेलिभरी</span></div></div>
+    <div class="why-card"><span class="ic">🏷️</span><div><b data-i18n="promo2_t">First Purchase</b><span data-i18n="promo2_s">पहिलो किनमेलमा थप छुट</span></div></div>
+    <div class="why-card"><span class="ic">🛡️</span><div><b data-i18n="promo3_t">Warranty Included</b><span data-i18n="promo3_s">सबै सामानमा अधिकारिक ग्यारेन्टी</span></div></div>
+    <div class="why-card"><span class="ic">💳</span><div><b data-i18n="promo4_t">Easy Payment</b><span data-i18n="promo4_s">नगद / eSewa / Khalti स्वीकार्य</span></div></div>
+  </div>
+</div>
+
+<div class="section" id="products">
+  <div class="section-head">
+    <h3 data-i18n="products_heading">हाम्रा सामानहरू</h3>
+    <span class="tag" id="resultCount"></span>
+  </div>
+  <div class="filters" id="filterRow"></div>
+  <div id="catalog"></div>
+  <div class="state-msg" id="stateMsg" style="display:none;"></div>
+</div>
+
+<footer>
+  <div class="foot-grid">
+    <div>
+      <h4 data-i18n="foot_links">Quick Links</h4>
+      <a href="#products" data-i18n="nav_products">सामानहरू</a>
+      <a href="#offers" data-i18n="nav_offers">अफर</a>
+      <a href="contact.html" data-i18n="topbar_contact">सम्पर्क</a>
+    </div>
+    <div>
+      <h4 data-i18n="foot_contact">सम्पर्क</h4>
+      <p>📍 Butwal, Rupandehi</p>
+      <p>👤 Prop. Govinda Panday</p>
+      <p>📞 ९८०-०००-०००० </p>
+      <p>✉️ info@lighthouse.com.np</p>
+    </div>
+    <div>
+      <h4 data-i18n="foot_hours">खुला समय</h4>
+      <p data-i18n="foot_hours1">आइत - बिहीबार: ७:०० - ८:००</p>
+      <p data-i18n="foot_hours2">शुक्रबार: बिदा</p>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span data-i18n="foot_copy">© 2026 Light House Electronics. सबै अधिकार सुरक्षित।</span>
+    <span>IT Support: Hemant Ghimire</span>
+  </div>
+</footer>
+
+<script>
+/* ============ i18n dictionary for static labels ============ */
+const I18N = {
+  np:{
+    topbar_contact:"सम्पर्क", nav_products:"सामानहरू", nav_offers:"अफर", nav_home:"होमपेज",
+    products_heading:"हाम्रा सामानहरू",
+    promo1_t:"Free Delivery", promo1_s:"Butwal भित्र निःशुल्क डेलिभरी",
+    promo2_t:"First Purchase", promo2_s:"पहिलो किनमेलमा थप छुट",
+    promo3_t:"Warranty Included", promo3_s:"सबै सामानमा अधिकारिक ग्यारेन्टी",
+    promo4_t:"Easy Payment", promo4_s:"नगद / eSewa / Khalti स्वीकार्य",
+    why_eyebrow:"किन Light House?", why_title:"खुद्रा र थोक दुवै, अर्डर अनुसार सबै सामान",
+    why_sub:"हामीसँग नभएको सामान पनि अर्डर अनुसार ल्याइदिन्छौं — साथमा निःशुल्क डेलिभरी।",
+    why1_t:"खुद्रा र थोक बिक्री", why1_s:"Retail & Wholesale — सानो वा ठूलो मात्रामा किन्नुहोस्",
+    why2_t:"अर्डर अनुसार सामान", why2_s:"स्टकमा नभएको सामान पनि अर्डर अनुसार उपलब्ध गराइन्छ",
+    foot_about:"Butwal, Rupandehi का लागि भरपर्दो इलेक्ट्रोनिक्स पसल।",
+    foot_links:"Quick Links", foot_contact:"सम्पर्क", foot_hours:"खुला समय",
+    foot_hours1:"आइत - बिहीबार: ७:०० - ८:००", foot_hours2:"शुक्रबार: बिदा",
+    foot_copy:"© 2026 Light House Electronics. सबै अधिकार सुरक्षित।",
+    all_cat:"सबै", items_word:"वस्तुहरू", in_stock:"उपलब्ध", out_stock:"स्टकमा छैन",
+    discount_word:"छुट", saved_word:"बचत", load_error:"⚠ products.json लोड गर्न सकिएन। यो फाइल index.html सँगै राख्नुहोस् र local server मार्फत खोल्नुहोस्।",
+    add_to_list:"+ सूचीमा थप्नुहोस्", added_to_list:"✓ सूचीमा थपियो", list_title:"मेरो सूची", list_total:"जम्मा",
+    list_send_wa:"WhatsApp मा पठाउनुहोस्", list_send_email:"इमेलमा पठाउनुहोस्", list_empty:"सूची खाली छ। सामानमा गई 'सूचीमा थप्नुहोस्' थिच्नुहोस्.",
+    no_results:"😕 तपाईंले खोजेको सामान फेला परेन।"
+  },
+  en:{
+    topbar_contact:"Contact", nav_products:"Products", nav_offers:"Offers", nav_home:"Home",
+    products_heading:"Our Products",
+    promo1_t:"Free Delivery", promo1_s:"Free delivery within Butwal",
+    promo2_t:"First Purchase", promo2_s:"Extra discount on first order",
+    promo3_t:"Warranty Included", promo3_s:"Official warranty on all products",
+    promo4_t:"Easy Payment", promo4_s:"Cash / eSewa / Khalti accepted",
+    why_eyebrow:"Why Light House?", why_title:"Retail & Wholesale — All items made-to-order",
+    why_sub:"Even if it's not in stock, we get it for you on order — plus free delivery.",
+    why1_t:"Retail & Wholesale", why1_s:"Buy in small or bulk quantity",
+    why2_t:"Made-to-Order Items", why2_s:"Out-of-stock items are arranged for you on order",
+    foot_about:"A trusted electronics shop for Butwal, Rupandehi.",
+    foot_links:"Quick Links", foot_contact:"Contact", foot_hours:"Opening Hours",
+    foot_hours1:"Sun - Thu: 7:00 AM - 8:00 PM", foot_hours2:"Friday: Closed",
+    foot_copy:"© 2026 Light House Electronics. All rights reserved.",
+    all_cat:"All", items_word:"items", in_stock:"In stock", out_stock:"Out of stock",
+    discount_word:"OFF", saved_word:"saved", load_error:"⚠ Could not load products.json. Keep this file next to index.html and open via a local server.",
+    add_to_list:"+ Add to List", added_to_list:"✓ Added", list_title:"My List", list_total:"Total",
+    list_send_wa:"Send via WhatsApp", list_send_email:"Send via Email", list_empty:"Your list is empty. Tap 'Add to List' on any product.",
+    no_results:"😕 No products found for your search."
+  }
+};
+
+/* Embedded fallback copy of products.json / slides.json.
+   Used automatically if fetch() fails (e.g. when the file is opened directly
+   by double-click instead of through a web server). Keep this in sync with
+   products.json / slides.json when you edit products, or just edit both. */
+const PRODUCTS_FALLBACK = [
+  { "id":1, "category_en":"TV", "category_np":"टिभी", "name_en":"LED TV 32 inch", "name_np":"LED टिभी ३२ इन्च", "desc_en":"Smart Android LED TV, Full HD", "desc_np":"स्मार्ट एन्ड्रोइड LED टिभी, Full HD", "price":18500, "discount":12, "stock":6, "image":"images/tv-32.jpg" },
+  { "id":2, "category_en":"TV", "category_np":"टिभी", "name_en":"LED TV 43 inch", "name_np":"LED टिभी ४३ इन्च", "desc_en":"Smart Android LED TV, 4K Support", "desc_np":"स्मार्ट एन्ड्रोइड LED टिभी, 4K Support", "price":32500, "discount":10, "stock":4, "image":"images/tv-43.jpg" },
+  { "id":3, "category_en":"Fridge", "category_np":"फ्रिज", "name_en":"Refrigerator 165L", "name_np":"रेफ्रिजरेटर १६५ लिटर", "desc_en":"Single door, energy saving fridge", "desc_np":"सिंगल डोर, ऊर्जा बचत फ्रिज", "price":24500, "discount":8, "stock":5, "image":"images/fridge-165.jpg" },
+  { "id":4, "category_en":"Washing Machine", "category_np":"वासिङ मेसिन", "name_en":"Washing Machine 7kg", "name_np":"वासिङ मेसिन ७ केजी", "desc_en":"Fully automatic top load washing machine", "desc_np":"फुल अटोम्याटिक टप लोड वासिङ मेसिन", "price":28900, "discount":15, "stock":3, "image":"images/washer-7kg.jpg" },
+  { "id":5, "category_en":"Kitchen", "category_np":"भान्सा सामान", "name_en":"Microwave Oven 23L", "name_np":"माइक्रोवेभ ओभन २३ लिटर", "desc_en":"Grill + Convection microwave oven", "desc_np":"ग्रिल + कन्भेक्सन माइक्रोवेभ ओभन", "price":12800, "discount":10, "stock":7, "image":"images/microwave-23l.jpg" },
+  { "id":6, "category_en":"Kitchen", "category_np":"भान्सा सामान", "name_en":"Rice Cooker 1.8L", "name_np":"राइस कुकर १.८ लिटर", "desc_en":"Automatic rice cooker with steamer", "desc_np":"स्टिमर सहितको अटोम्याटिक राइस कुकर", "price":2800, "discount":5, "stock":20, "image":"images/rice-cooker.jpg" },
+  { "id":7, "category_en":"Kitchen", "category_np":"भान्सा सामान", "name_en":"Mixer Grinder 750W", "name_np":"मिक्सर ग्राइन्डर ७५० वाट", "desc_en":"3 jar mixer grinder, heavy motor", "desc_np":"३ जार मिक्सर ग्राइन्डर, हेवी मोटर", "price":4500, "discount":0, "stock":15, "image":"images/mixer-grinder.jpg" },
+  { "id":8, "category_en":"Fan", "category_np":"पंखा", "name_en":"Ceiling Fan 56 inch", "name_np":"सिलिङ पंखा ५६ इन्च", "desc_en":"High speed energy saving ceiling fan", "desc_np":"हाई स्पीड ऊर्जा बचत सिलिङ पंखा", "price":3200, "discount":12, "stock":18, "image":"images/ceiling-fan.jpg" },
+  { "id":9, "category_en":"Audio", "category_np":"अडियो", "name_en":"Bluetooth Speaker", "name_np":"ब्लुटुथ स्पिकर", "desc_en":"Portable speaker with deep bass", "desc_np":"डिप बास सहितको पोर्टेबल स्पिकर", "price":2200, "discount":20, "stock":25, "image":"images/bt-speaker.jpg" },
+  { "id":10, "category_en":"Audio", "category_np":"अडियो", "name_en":"Home Theater System", "name_np":"होम थिएटर सिस्टम", "desc_en":"5.1 channel home theater with subwoofer", "desc_np":"सबवुफर सहितको ५.१ च्यानल होम थिएटर", "price":9800, "discount":18, "stock":6, "image":"images/home-theater.jpg" },
+  { "id":11, "category_en":"Power Backup", "category_np":"पावर ब्याकअप", "name_en":"Inverter 1000VA", "name_np":"इन्भर्टर १००० VA", "desc_en":"Battery backup inverter for home", "desc_np":"घरायसी ब्याट्री ब्याकअप इन्भर्टर", "price":13500, "discount":7, "stock":9, "image":"images/inverter-1000va.jpg" },
+  { "id":12, "category_en":"Appliance", "category_np":"उपकरण", "name_en":"Electric Iron", "name_np":"इलेक्ट्रिक आइरन", "desc_en":"Steam iron with non-stick sole plate", "desc_np":"नन-स्टिक सोल प्लेट सहितको स्टिम आइरन", "price":1450, "discount":0, "stock":30, "image":"images/electric-iron.jpg" }
+];
+const SLIDES_FALLBACK = [
+  { "image":"images/slide-1.png", "title_en":"Your One-Stop Electronic Market", "title_np":"तपाईंको एकमात्र इलेक्ट्रोनिक्स बजार", "subtitle_en":"Best brands, best prices, delivered across Butwal", "subtitle_np":"उत्तम ब्रान्ड, उत्तम मूल्य, बुटवलभरि डेलिभरी" },
+  { "image":"images/slide-2.png", "title_en":"Big Discount on Home Appliances", "title_np":"घरायसी सामानमा ठूलो छुट", "subtitle_en":"Up to 25% off this season", "subtitle_np":"यो सिजन २५% सम्म छुट" },
+  { "image":"images/slide-3.png", "title_en":"New Arrivals Every Month", "title_np":"हरेक महिना नयाँ सामान", "subtitle_en":"Latest TVs, fridges & kitchen gadgets", "subtitle_np":"नवीनतम टिभी, फ्रिज र भान्सा सामान" }
+];
+
+let LANG = "np";
+let PRODUCTS = [];
+let SLIDES = [];
+let activeCat = null;
+let slideIndex = 0;
+let slideTimer = null;
+let LIST = JSON.parse(localStorage.getItem("lh_list") || "{}"); // { productId: qty }
+
+function t(key){ return I18N[LANG][key]; }
+
+function npr(n){
+  return LANG === "en" ? "Rs " + n.toLocaleString("en-IN") : "रु " + n.toLocaleString("en-IN");
+}
+function effectivePrice(p){ return Math.round(p.price * (1 - p.discount/100)); }
+function catName(p){ return LANG === "en" ? p.category_en : p.category_np; }
+function prodName(p){ return LANG === "en" ? p.name_en : p.name_np; }
+function prodDesc(p){ return LANG === "en" ? p.desc_en : p.desc_np; }
+
+function applyStaticI18n(){
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    el.textContent = t(el.getAttribute("data-i18n"));
+  });
+  document.querySelectorAll("[data-i18n-ph]").forEach(el=>{
+    el.placeholder = t(el.getAttribute("data-i18n-ph"));
+  });
+  document.getElementById("btnNP").classList.toggle("active", LANG==="np");
+  document.getElementById("btnEN").classList.toggle("active", LANG==="en");
+  document.documentElement.lang = LANG === "en" ? "en" : "ne";
+}
+
+function setLang(lang){
+  LANG = lang;
+  localStorage.setItem("lh_lang", lang);
+  applyStaticI18n();
+  renderFilters();
+  renderCatalog();
+  renderSlides();
+  renderListPanel();
+  renderNavCategoryList();
+}
+
+/* ============ Hero Slider ============ */
+function renderSlides(){
+  const wrap = document.getElementById("slider");
+  wrap.innerHTML = "";
+  SLIDES.forEach((s,i)=>{
+    const div = document.createElement("div");
+    div.className = "slide" + (i===slideIndex ? " active" : "");
+    div.innerHTML = `
+      <img src="${s.image}" alt="" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg,#ffe7df,#fff)';">
+      <div class="scrim"></div>
+      <div class="slide-content">
+        <span class="eyebrow">light house.</span>
+        <h2>${LANG==="en" ? s.title_en : s.title_np}</h2>
+        <p>${LANG==="en" ? s.subtitle_en : s.subtitle_np}</p>
+        <a class="btn btn-orange" href="#products">${LANG==="en" ? "Shop Now" : "किनमेल गर्नुहोस्"}</a>
+      </div>
+    `;
+    wrap.appendChild(div);
+  });
+
+  const dots = document.createElement("div");
+  dots.className = "slider-dots";
+  SLIDES.forEach((s,i)=>{
+    const b = document.createElement("button");
+    b.className = i===slideIndex ? "active" : "";
+    b.onclick = ()=> goToSlide(i);
+    dots.appendChild(b);
+  });
+  wrap.appendChild(dots);
+
+  const prev = document.createElement("button");
+  prev.className = "slider-arrow prev"; prev.textContent = "‹";
+  prev.onclick = ()=> goToSlide((slideIndex - 1 + SLIDES.length) % SLIDES.length);
+  const next = document.createElement("button");
+  next.className = "slider-arrow next"; next.textContent = "›";
+  next.onclick = ()=> goToSlide((slideIndex + 1) % SLIDES.length);
+  wrap.appendChild(prev);
+  wrap.appendChild(next);
+}
+
+function goToSlide(i){
+  slideIndex = i;
+  document.querySelectorAll(".slide").forEach((el,idx)=> el.classList.toggle("active", idx===i));
+  document.querySelectorAll(".slider-dots button").forEach((el,idx)=> el.classList.toggle("active", idx===i));
+  resetAutoplay();
+}
+
+function resetAutoplay(){
+  clearInterval(slideTimer);
+  slideTimer = setInterval(()=>{
+    goToSlide((slideIndex + 1) % SLIDES.length);
+  }, 5000);
+}
+
+/* ============ Product Filters & Catalog ============ */
+function renderFilters(){
+  const cats = [...new Set(PRODUCTS.map(p=>p.category_en))];
+  const row = document.getElementById("filterRow");
+  row.innerHTML = "";
+  const allBtn = document.createElement("button");
+  allBtn.className = "chip" + (activeCat===null ? " active" : "");
+  allBtn.textContent = t("all_cat");
+  allBtn.onclick = ()=>{ activeCat = null; renderFilters(); renderCatalog(); };
+  row.appendChild(allBtn);
+
+  cats.forEach(catEn=>{
+    const sample = PRODUCTS.find(p=>p.category_en===catEn);
+    const btn = document.createElement("button");
+    btn.className = "chip" + (activeCat===catEn ? " active" : "");
+    btn.textContent = catName(sample);
+    btn.onclick = ()=>{ activeCat = catEn; renderFilters(); renderCatalog(); };
+    row.appendChild(btn);
+  });
+}
+
+function productCardHTML(p){
+  const final = effectivePrice(p);
+  return `
+    <div class="card">
+      ${p.discount > 0 ? `<span class="badge">${p.discount}% ${t("discount_word")}</span>` : (p.stock===0 ? `<span class="badge out">${t("out_stock")}</span>` : "")}
+      <div class="card-media">
+        <img src="${p.image}" alt="${prodName(p)}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'fallback',textContent:'📦'}))">
+      </div>
+      <div class="card-body">
+        <span class="card-cat">${catName(p)}</span>
+        <span class="card-name">${prodName(p)}</span>
+        <span class="card-desc">${prodDesc(p)}</span>
+        <div class="price-row">
+          <span class="price-now">${npr(final)}</span>
+          ${p.discount>0 ? `<span class="price-old">${npr(p.price)}</span>` : ""}
+        </div>
+        ${p.discount>0 ? `<span class="save-line">${npr(p.price-final)} ${t("saved_word")}</span>` : ""}
+        <span class="stock-line">${p.stock > 0 ? "✅ " + t("in_stock") + ": " + p.stock : "❌ " + t("out_stock")}</span>
+        <button class="add-list-btn" data-id="${p.id}" onclick="addToList(${p.id}, this)">${t("add_to_list")}</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderCatalog(){
+  const wrap = document.getElementById("catalog");
+  wrap.innerHTML = "";
+
+  let base = PRODUCTS;
+  if(activeCat){
+    base = base.filter(p=>p.category_en===activeCat);
+  }
+
+  document.getElementById("resultCount").textContent = base.length + " " + t("items_word");
+
+  if(base.length === 0){
+    wrap.innerHTML = `<div class="state-msg" style="display:block;padding:40px 0;">${t("no_results")}</div>`;
+    return;
+  }
+
+  if(activeCat){
+    const grid = document.createElement("div");
+    grid.className = "grid";
+    grid.innerHTML = base.map(productCardHTML).join("");
+    wrap.appendChild(grid);
+    return;
+  }
+
+  const cats = [...new Set(base.map(p=>p.category_en))];
+  cats.forEach(catEn=>{
+    const list = base.filter(p=>p.category_en===catEn);
+    const block = document.createElement("div");
+    block.className = "category-block";
+    block.innerHTML = `<h4>${catName(list[0])}</h4>`;
+    const grid = document.createElement("div");
+    grid.className = "grid";
+    grid.innerHTML = list.map(productCardHTML).join("");
+    block.appendChild(grid);
+    wrap.appendChild(block);
+  });
+}
+
+/* ============ List (Add / Send) ============ */
+function saveList(){
+  localStorage.setItem("lh_list", JSON.stringify(LIST));
+  updateListCount();
+}
+
+function updateListCount(){
+  const total = Object.values(LIST).reduce((a,b)=>a+b,0);
+  document.getElementById("listCount").textContent = total;
+}
+
+function addToList(id, btnEl){
+  LIST[id] = (LIST[id] || 0) + 1;
+  saveList();
+  renderListPanel();
+  if(btnEl){
+    btnEl.classList.add("added");
+    btnEl.textContent = t("added_to_list");
+    setTimeout(()=>{ btnEl.classList.remove("added"); btnEl.textContent = t("add_to_list"); }, 1200);
+  }
+}
+
+function changeQty(id, delta){
+  LIST[id] = (LIST[id] || 0) + delta;
+  if(LIST[id] <= 0) delete LIST[id];
+  saveList();
+  renderListPanel();
+}
+
+function removeFromList(id){
+  delete LIST[id];
+  saveList();
+  renderListPanel();
+}
+
+function renderListPanel(){
+  const wrap = document.getElementById("listItems");
+  const ids = Object.keys(LIST);
+  if(ids.length === 0){
+    wrap.innerHTML = `<div class="list-empty">${t("list_empty")}</div>`;
+    document.getElementById("listTotal").textContent = npr(0);
+    return;
+  }
+  let total = 0;
+  wrap.innerHTML = ids.map(idStr=>{
+    const id = Number(idStr);
+    const p = PRODUCTS.find(x=>x.id===id);
+    if(!p) return "";
+    const qty = LIST[id];
+    const unit = effectivePrice(p);
+    total += unit * qty;
+    return `
+      <div class="list-row">
+        <img src="${p.image}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'fb',textContent:'📦'}))">
+        <div class="list-row-info">
+          <b>${prodName(p)}</b>
+          <span>${npr(unit)} × ${qty}</span>
+        </div>
+        <div class="qty-box">
+          <button onclick="changeQty(${id},-1)">−</button>
+          <b>${qty}</b>
+          <button onclick="changeQty(${id},1)">+</button>
+        </div>
+        <button class="list-row-remove" onclick="removeFromList(${id})">🗑️</button>
+      </div>
+    `;
+  }).join("");
+  document.getElementById("listTotal").textContent = npr(total);
+}
+
+function buildListMessage(){
+  const ids = Object.keys(LIST);
+  if(ids.length === 0) return "";
+  const lines = [LANG==="en" ? "Hello, I would like to order:" : "नमस्ते, मलाई यी सामान चाहिएको थियो:", ""];
+  let total = 0;
+  ids.forEach(idStr=>{
+    const id = Number(idStr);
+    const p = PRODUCTS.find(x=>x.id===id);
+    if(!p) return;
+    const qty = LIST[id];
+    const unit = effectivePrice(p);
+    total += unit * qty;
+    lines.push(`• ${prodName(p)} x${qty} - ${npr(unit*qty)}`);
+  });
+  lines.push("");
+  lines.push((LANG==="en" ? "Total: " : "जम्मा: ") + npr(total));
+  return lines.join("\n");
+}
+
+function openListPanel(){
+  renderListPanel();
+  document.getElementById("listOverlay").classList.add("open");
+  document.getElementById("listPanel").classList.add("open");
+}
+function closeListPanel(){
+  document.getElementById("listOverlay").classList.remove("open");
+  document.getElementById("listPanel").classList.remove("open");
+}
+
+document.getElementById("openListBtn").onclick = openListPanel;
+document.getElementById("closeListBtn").onclick = closeListPanel;
+document.getElementById("listOverlay").onclick = closeListPanel;
+
+document.getElementById("sendWhatsapp").onclick = ()=>{
+  const msg = buildListMessage();
+  if(!msg) return;
+  const phone = "9779800000000"; // shop's WhatsApp number, country code + number, no +
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
+};
+
+document.getElementById("sendEmail").onclick = ()=>{
+  const msg = buildListMessage();
+  if(!msg) return;
+  const subject = LANG==="en" ? "Order from Light House website" : "Light House वेबसाइटबाट अर्डर";
+  window.location.href = `mailto:info@lighthouse.com.np?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(msg)}`;
+};
+
+/* ============ Mobile Nav Drawer ============ */
+function openNavDrawer(){
+  document.getElementById("navOverlay").classList.add("open");
+  document.getElementById("navDrawer").classList.add("open");
+}
+function closeNavDrawer(){
+  document.getElementById("navOverlay").classList.remove("open");
+  document.getElementById("navDrawer").classList.remove("open");
+}
+document.getElementById("hamburgerBtn").onclick = openNavDrawer;
+document.getElementById("closeNavBtn").onclick = closeNavDrawer;
+document.getElementById("navOverlay").onclick = closeNavDrawer;
+document.getElementById("navDrawerBody").addEventListener("click", (e)=>{
+  if(e.target.tagName === "A") closeNavDrawer();
+});
+document.getElementById("ndAllProducts").onclick = ()=>{
+  activeCat = null; renderFilters(); renderCatalog();
+};
+
+function renderNavCategoryList(){
+  const wrap = document.getElementById("ndCategoryList");
+  const cats = [...new Set(PRODUCTS.map(p=>p.category_en))];
+  wrap.innerHTML = cats.map(catEn=>{
+    const sample = PRODUCTS.find(p=>p.category_en===catEn);
+    return `<a href="#products" class="nav-close-link nd-cat-link" data-cat="${catEn}">${catName(sample)}</a>`;
+  }).join("");
+  wrap.querySelectorAll("a").forEach(a=>{
+    a.onclick = ()=>{
+      activeCat = a.getAttribute("data-cat");
+      renderFilters();
+      renderCatalog();
+    };
+  });
+}
+
+/* ============ Init ============ */
+document.getElementById("btnNP").onclick = ()=> setLang("np");
+document.getElementById("btnEN").onclick = ()=> setLang("en");
+
+function startApp(products, slides, usedFallback){
+  PRODUCTS = products;
+  SLIDES = slides;
+  const saved = localStorage.getItem("lh_lang");
+  LANG = saved === "en" ? "en" : "np";
+  applyStaticI18n();
+  renderFilters();
+  renderCatalog();
+  renderSlides();
+  resetAutoplay();
+  updateListCount();
+  renderNavCategoryList();
+  if(usedFallback){
+    const msg = document.getElementById("stateMsg");
+    msg.style.display = "block";
+    msg.style.padding = "0 0 20px";
+    msg.style.fontSize = ".78rem";
+    msg.textContent = LANG==="en"
+      ? "ℹ️ Showing built-in product data (products.json could not be fetched — open via a local/web server to edit it live)."
+      : "ℹ️ अहिले built-in product data देखाइँदैछ (products.json fetch हुन सकेन — live edit का लागि local/web server मार्फत खोल्नुहोस्)।";
+  }
+}
+
+Promise.all([
+  fetch("products.json").then(r=>{ if(!r.ok) throw new Error("products"); return r.json(); }),
+  fetch("slides.json").then(r=>{ if(!r.ok) throw new Error("slides"); return r.json(); })
+]).then(([products, slides])=>{
+  startApp(products, slides, false);
+}).catch(()=>{
+  startApp(PRODUCTS_FALLBACK, SLIDES_FALLBACK, true);
+});
+</script>
+
+</body>
+</html>
