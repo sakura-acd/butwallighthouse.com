@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact | Light House</title>
+<style>
+  :root{
+    --orange:#ff5c39;
+    --orange-dark:#e84a28;
+    --ink:#1c1c1c;
+    --muted:#7c7c7c;
+    --line:#ececec;
+    --bg:#ffffff;
+    --bg-soft:#faf9f7;
+    --green:#1fa05a;
+    --fb:#1877F2;
+    --wa:#25D366;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Segoe UI',system-ui,sans-serif;line-height:1.5;
+  }
+  a{color:inherit;text-decoration:none;}
+
+  /* ===== Top bar ===== */
+  .topbar{
+    background:var(--ink);color:#fff;font-size:.78rem;
+    padding:7px 6%;display:flex;justify-content:space-between;align-items:center;
+  }
+  .topbar a{color:#fff;opacity:.85;}
+  .lang-switch{display:flex;align-items:center;gap:6px;background:#2b2b2b;border-radius:30px;padding:3px;}
+  .lang-switch button{border:none;background:transparent;color:#bbb;font-size:.74rem;padding:4px 12px;border-radius:30px;cursor:pointer;font-weight:600;}
+  .lang-switch button.active{background:var(--orange);color:#fff;}
+
+  /* ===== Header ===== */
+  header{
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+    padding:18px 6%;border-bottom:1px solid var(--line);
+    position:sticky;top:0;background:#fff;z-index:50;flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .logo-mark{
+    width:36px;height:36px;border-radius:8px;background:var(--orange);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;font-weight:800;
+  }
+  .brand h1{font-size:1.2rem;}
+  .brand h1 span{color:var(--orange);}
+  nav{display:flex;align-items:center;gap:22px;font-size:.9rem;}
+  nav a:hover{color:var(--orange);}
+
+  /* ===== Page hero ===== */
+  .page-hero{
+    background:var(--bg-soft);padding:60px 6%;text-align:center;
+  }
+  .page-hero .eyebrow{
+    color:var(--orange);font-weight:700;font-size:.85rem;text-transform:uppercase;
+    letter-spacing:1px;margin-bottom:10px;display:block;
+  }
+  .page-hero h2{font-size:clamp(1.8rem,3.6vw,2.6rem);font-weight:800;margin-bottom:10px;}
+  .page-hero p{color:var(--muted);max-width:520px;margin:0 auto;}
+
+  /* ===== Contact cards ===== */
+  .section{padding:60px 6%;}
+  .contact-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:22px;margin-bottom:60px;
+  }
+  .ccard{
+    border:1px solid var(--line);border-radius:12px;padding:28px 22px;
+    text-align:center;background:#fff;
+    transition:box-shadow .15s ease, transform .15s ease;
+  }
+  .ccard:hover{box-shadow:0 10px 24px rgba(0,0,0,.08);transform:translateY(-3px);}
+  .ccard .ic{
+    width:54px;height:54px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.5rem;color:#fff;margin:0 auto 16px;
+  }
+  .ccard.wa .ic{background:var(--wa);}
+  .ccard.fb .ic{background:var(--fb);}
+  .ccard.ph .ic{background:var(--orange);}
+  .ccard.em .ic{background:#444;}
+  .ccard b{display:block;font-size:1rem;margin-bottom:4px;}
+  .ccard span{font-size:.85rem;color:var(--muted);display:block;margin-bottom:14px;}
+  .ccard-btn{
+    display:inline-block;padding:10px 20px;border-radius:6px;font-size:.85rem;font-weight:700;
+  }
+  .ccard.wa .ccard-btn{background:var(--wa);color:#fff;}
+  .ccard.fb .ccard-btn{background:var(--fb);color:#fff;}
+  .ccard.ph .ccard-btn{background:var(--orange);color:#fff;}
+  .ccard.em .ccard-btn{background:#444;color:#fff;}
+  .ccard-btn:hover{opacity:.9;}
+
+  /* ===== Form + map ===== */
+  .contact-bottom{
+    display:grid;grid-template-columns:1.1fr .9fr;gap:40px;
+  }
+  .form-box{
+    border:1px solid var(--line);border-radius:12px;padding:30px;background:var(--bg-soft);
+  }
+  .form-box h3{font-size:1.25rem;font-weight:800;margin-bottom:18px;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:6px;font-weight:600;}
+  .field input, .field textarea{
+    width:100%;border:1px solid var(--line);border-radius:6px;
+    padding:11px 14px;font-size:.9rem;font-family:inherit;background:#fff;outline:none;
+  }
+  .field input:focus, .field textarea:focus{border-color:var(--orange);}
+  .field textarea{resize:vertical;min-height:110px;}
+  .submit-btn{
+    background:var(--orange);color:#fff;border:none;padding:13px 30px;
+    border-radius:6px;font-size:.92rem;font-weight:700;cursor:pointer;
+  }
+  .submit-btn:hover{background:var(--orange-dark);}
+
+  .info-box{
+    border:1px solid var(--line);border-radius:12px;padding:30px;
+  }
+  .info-box h3{font-size:1.15rem;font-weight:800;margin-bottom:18px;}
+  .info-row{display:flex;gap:14px;margin-bottom:18px;align-items:flex-start;}
+  .info-row .ic{font-size:1.2rem;width:30px;flex-shrink:0;}
+  .info-row b{display:block;font-size:.9rem;}
+  .info-row span{font-size:.84rem;color:var(--muted);}
+  .map-frame{
+    margin-top:20px;border-radius:10px;overflow:hidden;border:1px solid var(--line);
+    height:200px;background:var(--bg-soft);display:flex;align-items:center;justify-content:center;
+    color:var(--muted);font-size:.85rem;
+  }
+
+  @media(max-width:880px){
+    .contact-bottom{grid-template-columns:1fr;}
+  }
+  @media(max-width:520px){
+    nav a{display:none;}
+    .hamburger{display:flex;}
+  }
+
+  /* ===== Hamburger ===== */
+  .hamburger{
+    display:none;width:38px;height:38px;border-radius:8px;border:1px solid var(--line);
+    background:#fff;cursor:pointer;align-items:center;justify-content:center;
+    flex-direction:column;gap:4px;
+  }
+  .hamburger span{width:18px;height:2px;background:var(--ink);display:block;}
+
+  /* ===== Mobile Nav Drawer ===== */
+  .nav-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:95;
+    opacity:0;pointer-events:none;transition:opacity .25s ease;
+  }
+  .nav-overlay.open{opacity:1;pointer-events:auto;}
+  .nav-drawer{
+    position:fixed;top:0;right:0;height:100%;width:300px;max-width:88vw;
+    background:#fff;z-index:96;transform:translateX(100%);transition:transform .3s ease;
+    display:flex;flex-direction:column;box-shadow:-8px 0 24px rgba(0,0,0,.12);
+  }
+  .nav-drawer.open{transform:translateX(0);}
+  .nav-drawer-head{
+    padding:18px 20px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .nav-drawer-head b{font-size:1.05rem;}
+  .nav-drawer-head button{border:none;background:none;font-size:1.3rem;cursor:pointer;color:var(--muted);}
+  .nav-drawer-body{flex:1;overflow-y:auto;padding:10px 0;}
+  .nav-drawer-body a{
+    display:block;padding:13px 20px;font-size:.95rem;color:var(--ink);border-bottom:1px solid var(--line);
+  }
+
+  /* ===== Footer ===== */
+  footer{background:var(--ink);color:#cfcfcf;padding:50px 6% 24px;margin-top:30px;}
+  .foot-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:30px;margin-bottom:30px;}
+  .foot-grid h4{color:#fff;font-size:.95rem;margin-bottom:14px;}
+  .foot-grid p,.foot-grid a{font-size:.84rem;color:#b6b6b6;display:block;margin-bottom:8px;}
+
+  @media(max-width:640px){
+    .foot-grid{grid-template-columns:1fr;text-align:center;}
+    .foot-bottom{justify-content:center;text-align:center;flex-direction:column;}
+  }
+  .foot-bottom{
+    border-top:1px solid #333;padding-top:18px;font-size:.78rem;color:#8a8a8a;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar" style="justify-content:flex-end;">
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div class="lang-switch">
+      <button id="btnNP" class="active">नेपाली</button>
+      <button id="btnEN">English</button>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="brand">
+    <div class="logo-mark">L</div>
+    <h1>light<span>house.</span></h1>
+  </div>
+  <nav>
+    <a href="index.html" data-i18n="nav_home">होमपेज</a>
+    <a href="index.html#products" data-i18n="nav_products">सामानहरू</a>
+    <a href="contact.html" style="color:var(--orange);" data-i18n="nav_contact">सम्पर्क</a>
+    <button class="hamburger" id="hamburgerBtn"><span></span><span></span><span></span></button>
+  </nav>
+</header>
+
+<div class="nav-overlay" id="navOverlay"></div>
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-head">
+    <b>light house.</b>
+    <button id="closeNavBtn">✕</button>
+  </div>
+  <div class="nav-drawer-body">
+    <a href="index.html" data-i18n="nav_home">होमपेज</a>
+    <a href="index.html#products" data-i18n="nav_products">सामानहरू</a>
+    <a href="contact.html" data-i18n="nav_contact">सम्पर्क</a>
+  </div>
+</div>
+
+<section class="page-hero">
+  <span class="eyebrow" data-i18n="hero_eyebrow">हामीलाई सम्पर्क गर्नुहोस्</span>
+  <h2 data-i18n="hero_title">तपाईंको प्रश्न वा अर्डरका लागि सम्पर्क गर्नुहोस्</h2>
+  <p data-i18n="hero_sub">WhatsApp, फोन, इमेल वा Facebook मार्फत हामीलाई सम्पर्क गर्नुहोस् — हामी छिट्टै जवाफ दिनेछौं।</p>
+</section>
+
+<div class="section">
+  <div class="contact-grid">
+    <div class="ccard wa">
+      <div class="ic">📲</div>
+      <b>WhatsApp</b>
+      <span data-i18n="wa_sub">सिधा च्याट गर्नुहोस्</span>
+      <a class="ccard-btn" id="waLink" href="#" target="_blank" data-i18n="wa_btn">WhatsApp खोल्नुहोस्</a>
+    </div>
+    <div class="ccard fb">
+      <div class="ic">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M22 12.07C22 6.51 17.52 2 12 2S2 6.51 2 12.07c0 5.02 3.66 9.18 8.44 9.93v-7.02H7.9v-2.91h2.54V9.85c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.78-1.63 1.57v1.89h2.78l-.44 2.91h-2.34V22c4.78-.75 8.44-4.91 8.44-9.93Z"/></svg>
+      </div>
+      <b>Facebook</b>
+      <span data-i18n="fb_sub">हाम्रो पेज follow गर्नुहोस्</span>
+      <a class="ccard-btn" href="https://facebook.com/lighthouseelectronics" target="_blank" data-i18n="fb_btn">Facebook पेज</a>
+    </div>
+    <div class="ccard ph">
+      <div class="ic">📞</div>
+      <b data-i18n="ph_title">फोन</b>
+      <span>९८०-०००-०००० </span>
+      <a class="ccard-btn" href="tel:9800000000" data-i18n="ph_btn">अहिले कल गर्नुहोस्</a>
+    </div>
+    <div class="ccard em">
+      <div class="ic">✉️</div>
+      <b data-i18n="em_title">इमेल</b>
+      <span>info@lighthouse.com.np</span>
+      <a class="ccard-btn" href="mailto:info@lighthouse.com.np" data-i18n="em_btn">इमेल पठाउनुहोस्</a>
+    </div>
+  </div>
+
+  <div class="contact-bottom">
+    <div class="form-box">
+      <h3 data-i18n="form_title">हामीलाई सन्देश पठाउनुहोस्</h3>
+      <form id="contactForm">
+        <div class="field">
+          <label data-i18n="form_name">पूरा नाम</label>
+          <input type="text" id="fName" required>
+        </div>
+        <div class="field">
+          <label data-i18n="form_phone">फोन / इमेल</label>
+          <input type="text" id="fContact" required>
+        </div>
+        <div class="field">
+          <label data-i18n="form_msg">सन्देश</label>
+          <textarea id="fMessage" required></textarea>
+        </div>
+        <button type="submit" class="submit-btn" data-i18n="form_submit">सन्देश पठाउनुहोस्</button>
+      </form>
+    </div>
+
+    <div class="info-box">
+      <h3 data-i18n="info_title">पसलको जानकारी</h3>
+      <div class="info-row"><span class="ic">📍</span><div><b data-i18n="info_addr_t">ठेगाना</b><span>Traders Chowk, Butwal, Rupandehi</span></div></div>
+      <div class="info-row"><span class="ic">⏰</span><div><b data-i18n="info_hours_t">खुला समय</b><span data-i18n="info_hours_v">आइत - बिहीबार: ७:०० - ८:००, शुक्रबार बिदा</span></div></div>
+      <div class="info-row"><span class="ic">👤</span><div><b data-i18n="info_prop_t">प्रोपराइटर</b><span>Prop. Govinda Panday</span></div></div>
+      <div class="map-frame" data-i18n="map_placeholder">📍 Google Map यहाँ राख्न सकिन्छ</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-grid">
+    <div>
+      <h4 data-i18n="foot_links">Quick Links</h4>
+      <a href="index.html" data-i18n="nav_home">होमपेज</a>
+      <a href="index.html#products" data-i18n="nav_products">सामानहरू</a>
+      <a href="contact.html" data-i18n="nav_contact">सम्पर्क</a>
+    </div>
+    <div>
+      <h4 data-i18n="foot_contact">सम्पर्क</h4>
+      <p>📍 Butwal, Rupandehi</p>
+      <p>👤 Prop. Govinda Panday</p>
+      <p>📞 ९८०-०००-०००० </p>
+      <p>✉️ info@lighthouse.com.np</p>
+    </div>
+    <div>
+      <h4 data-i18n="foot_hours">खुला समय</h4>
+      <p data-i18n="foot_hours1">आइत - बिहीबार: ७:०० - ८:००</p>
+      <p data-i18n="foot_hours2">शुक्रबार: बिदा</p>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span data-i18n="foot_copy">© 2026 Light House Electronics. सबै अधिकार सुरक्षित।</span>
+    <span>IT Support: Hemant Ghimire</span>
+  </div>
+</footer>
+
+<script>
+const I18N = {
+  np:{
+    nav_home:"होमपेज", nav_products:"सामानहरू", nav_contact:"सम्पर्क",
+    hero_eyebrow:"हामीलाई सम्पर्क गर्नुहोस्",
+    hero_title:"तपाईंको प्रश्न वा अर्डरका लागि सम्पर्क गर्नुहोस्",
+    hero_sub:"WhatsApp, फोन, इमेल वा Facebook मार्फत हामीलाई सम्पर्क गर्नुहोस् — हामी छिट्टै जवाफ दिनेछौं।",
+    wa_sub:"सिधा च्याट गर्नुहोस्", wa_btn:"WhatsApp खोल्नुहोस्",
+    fb_sub:"हाम्रो पेज follow गर्नुहोस्", fb_btn:"Facebook पेज",
+    ph_title:"फोन", ph_btn:"अहिले कल गर्नुहोस्",
+    em_title:"इमेल", em_btn:"इमेल पठाउनुहोस्",
+    form_title:"हामीलाई सन्देश पठाउनुहोस्", form_name:"पूरा नाम", form_phone:"फोन / इमेल",
+    form_msg:"सन्देश", form_submit:"सन्देश पठाउनुहोस्",
+    info_title:"पसलको जानकारी", info_addr_t:"ठेगाना",
+    info_hours_t:"खुला समय", info_hours_v:"आइत - बिहीबार: ७:०० - ८:००, शुक्रबार बिदा",
+    info_prop_t:"प्रोपराइटर", map_placeholder:"📍 Google Map यहाँ राख्न सकिन्छ",
+    foot_about:"Butwal, Rupandehi का लागि भरपर्दो इलेक्ट्रोनिक्स पसल।",
+    foot_links:"Quick Links", foot_contact:"सम्पर्क", foot_hours:"खुला समय",
+    foot_hours1:"आइत - बिहीबार: ७:०० - ८:००", foot_hours2:"शुक्रबार: बिदा",
+    foot_copy:"© 2026 Light House Electronics. सबै अधिकार सुरक्षित।"
+  },
+  en:{
+    nav_home:"Home", nav_products:"Products", nav_contact:"Contact",
+    hero_eyebrow:"Get In Touch",
+    hero_title:"Contact us for any question or order",
+    hero_sub:"Reach us via WhatsApp, phone, email or Facebook — we reply quickly.",
+    wa_sub:"Chat with us directly", wa_btn:"Open WhatsApp",
+    fb_sub:"Follow our page", fb_btn:"Facebook Page",
+    ph_title:"Phone", ph_btn:"Call Now",
+    em_title:"Email", em_btn:"Send Email",
+    form_title:"Send us a message", form_name:"Full Name", form_phone:"Phone / Email",
+    form_msg:"Message", form_submit:"Send Message",
+    info_title:"Shop Information", info_addr_t:"Address",
+    info_hours_t:"Opening Hours", info_hours_v:"Sun - Thu: 7:00 AM - 8:00 PM, Friday closed",
+    info_prop_t:"Proprietor", map_placeholder:"📍 Google Map can be placed here",
+    foot_about:"A trusted electronics shop for Butwal, Rupandehi.",
+    foot_links:"Quick Links", foot_contact:"Contact", foot_hours:"Opening Hours",
+    foot_hours1:"Sun - Thu: 7:00 AM - 8:00 PM", foot_hours2:"Friday: Closed",
+    foot_copy:"© 2026 Light House Electronics. All rights reserved."
+  }
+};
+
+let LANG = localStorage.getItem("lh_lang") === "en" ? "en" : "np";
+function t(key){ return I18N[LANG][key]; }
+
+function applyI18n(){
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    el.textContent = t(el.getAttribute("data-i18n"));
+  });
+  document.getElementById("btnNP").classList.toggle("active", LANG==="np");
+  document.getElementById("btnEN").classList.toggle("active", LANG==="en");
+  document.documentElement.lang = LANG === "en" ? "en" : "ne";
+}
+function setLang(lang){
+  LANG = lang;
+  localStorage.setItem("lh_lang", lang);
+  applyI18n();
+}
+document.getElementById("btnNP").onclick = ()=> setLang("np");
+document.getElementById("btnEN").onclick = ()=> setLang("en");
+applyI18n();
+
+document.getElementById("hamburgerBtn").onclick = ()=>{
+  document.getElementById("navOverlay").classList.add("open");
+  document.getElementById("navDrawer").classList.add("open");
+};
+function closeNavDrawer(){
+  document.getElementById("navOverlay").classList.remove("open");
+  document.getElementById("navDrawer").classList.remove("open");
+}
+document.getElementById("closeNavBtn").onclick = closeNavDrawer;
+document.getElementById("navOverlay").onclick = closeNavDrawer;
+
+/* WhatsApp link with shop number */
+const WA_PHONE = "9779800000000"; // country code + number, no +, no spaces
+document.getElementById("waLink").href = `https://wa.me/${WA_PHONE}`;
+
+/* Contact form -> opens mailto with prefilled content (no backend available) */
+document.getElementById("contactForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  const name = document.getElementById("fName").value.trim();
+  const contact = document.getElementById("fContact").value.trim();
+  const message = document.getElementById("fMessage").value.trim();
+  const subject = LANG==="en" ? "Message from website contact form" : "वेबसाइट सम्पर्क फारमबाट सन्देश";
+  const body = (LANG==="en" ? "Name: " : "नाम: ") + name + "\n" +
+               (LANG==="en" ? "Contact: " : "सम्पर्क: ") + contact + "\n\n" + message;
+  window.location.href = `mailto:info@lighthouse.com.np?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+});
+</script>
+
+</body>
+</html>
